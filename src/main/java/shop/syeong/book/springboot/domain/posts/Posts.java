@@ -4,6 +4,7 @@ import com.sun.javafx.beans.IDProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shop.syeong.book.springboot.domain.BaseTimeEntity;
 
 import javax.persistence.*;
 
@@ -15,7 +16,7 @@ import javax.persistence.*;
  * 테이블과 링크될 클래스임을 나타냄
  * 기본적으로 클래스의 카멜케이스 이름을 언더스코어 네이밍(_)으로 테이블 이름을 매칭함 ex)SalesManager.java -> sales_manager table
  */
-public class Posts {    // 주요 어노테이션을 클래스에 가깝게
+public class Posts extends BaseTimeEntity {    // 주요 어노테이션을 클래스에 가깝게
 // Posts 클래스는 실제 DB의 테이블과 매칭될 클래스(보통 Entity 클래스라고 함)
 // JPA를 사용하면 DB 데이터에 작업할 경우 실제 쿼리를 날리기 보다는, 이 Entity 클래스의 수정을 통해 작업함
 

@@ -52,6 +52,12 @@ public class Posts {    // 주요 어노테이션을 클래스에 가깝게
         this.author = author;
     }
 
+    // 게시물 수정
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
 }
 
 

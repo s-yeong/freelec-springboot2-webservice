@@ -6,9 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.syeong.book.springboot.domain.posts.Posts;
 import shop.syeong.book.springboot.domain.posts.PostsRepository;
+import shop.syeong.book.springboot.web.dto.PostsListResponseDto;
 import shop.syeong.book.springboot.web.dto.PostsResponseDto;
 import shop.syeong.book.springboot.web.dto.PostsSaveRequestDto;
 import shop.syeong.book.springboot.web.dto.PostsUpdateRequestDto;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -40,6 +44,16 @@ public class PostsService {
 
         return new PostsResponseDto(entity);
     }
+
+    // 게시글 전체 조회
+    @Transactional(readOnly = true)     // readonly = true => 트랜잭션 범위는 유지하되, 조회 기능만 남겨두어 조회 속도가 개선됨
+    public List<PostsListResponseDto> findAllDesc() {
+        return postsRepository.findAlldesc().stream()
+                .map(PostsListResponseDto::new)
+                .collect(Collectors.toList());
+    }
+    // .map(PostsListResponseDto::new) ==> .map(posts -> new PostsListResponseDto(posts))
+    // postsRepository 결과로 넘어온 Posts의 Stream을 map을 통해 PostsListResponseDto 변환 -> List로 반환하는 메소드
 
 }
 

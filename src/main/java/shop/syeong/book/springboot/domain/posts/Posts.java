@@ -1,6 +1,5 @@
 package shop.syeong.book.springboot.domain.posts;
 
-import com.sun.javafx.beans.IDProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

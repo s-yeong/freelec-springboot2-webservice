@@ -1,0 +1,95 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+env: # 환경 변수 (이름 : 값)
+  S3_BUCKET_NAME: freelec-s3-bucket # s3 버킷 이름
+  PROJECT_NAME: freelec-springboot2-webservice # Github 프로젝트 이름
+  CODE_DEPLOY_APP_NAME: freelec-springboot2-webservice
+  CODE_DEPLOY_GROUP_NAME: freelec-springboot2-webservice-group
+  
+name: Spring Boot & Gradle CI/CD
+
+on: # 워크플로우를 수행할 이벤트
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs: # 수행할 워크플로우
+  build:
+    
+    runs-on: ubuntu-latest # 실행 환경 지정
+    permissions: 
+      contents: read 
+      packages: write
+
+    steps:
+    # 워크플로우 실행 전 기본적으로 체크아웃 필요
+    - uses: actions/checkout@v3
+    
+    # JDk 8 버전 설치
+    - name: Set up JDK 8
+      uses: actions/setup-java@v3
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+        
+    # gradlew 권한 부여
+    - name: Run chmod to make gradlew executable
+      run: chmod +x ./gradlew
+      shell: bash
+      
+    # Gradle 사용 (argument 뒤에 그대로 실행)
+    - name: Build with Gradle
+      run: ./gradlew clean build -x test
+      shell: bash
+    
+    - name: Get current time
+      uses: 1466587594/get-current-time@v2  # KST로 진행 하기 위해 offset에 +09:00 를 해줍
+      id: current-time
+      with:
+        format: YYYY-MM-DDTHH-mm-ss 
+        utcOffset: "+09:00"
+
+    # 현재 시간
+    - name: Show Current Time
+      run: echo "CurrentTime=${{steps.current-time.outputs.formattedTime}}"
+      shell: bash
+
+    # 프로젝트 이름으로 해당 폴더를 모두 압축 (빌드된 전체 폴더)
+    - name: Make zip file
+      run: zip -r ./$PROJECT_NAME.zip .
+      shell: bash
+      
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
+    
+    # S3에 프로젝트 이름에 해당하는 폴더에 zip파일 저장
+    - name: Upload to S3  
+      run: aws s3 cp --region ap-northeast-2 ./$PROJECT_NAME.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$PROJECT_NAME.zip
+
+    # S3 Bucket으로 copy
+    - name: Deliver to AWS S3
+      env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+          aws s3 cp \
+          --region ap-northeast-2 \
+          --acl private ./freelec-springboot2-webservice.zip s3://freelec-s3-bucket/
+    # Deploy
+    - name: Code Deploy
+      run: aws deploy create-deployment --application-name $CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name $CODE_DEPLOY_GROUP_NAME --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$PROJECT_NAME.zip
+
+

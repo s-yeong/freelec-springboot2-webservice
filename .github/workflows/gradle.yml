@@ -62,7 +62,7 @@ jobs: # 수행할 워크플로우
       run: |
           aws s3 cp \
           --region ap-northeast-2 \
-          --acl private ./freelec-springboot2-webservice s3://freelec-springboot2-webservice/freelec-springboot2-webservice.zip
+          --acl private ./freelec-springboot2-webservice.zip s3://freelec-s3-bucket/
     # Deploy
     - name: Deploy
       env:
@@ -73,7 +73,7 @@ jobs: # 수행할 워크플로우
         --application-name codedeploy-app \
         --deployment-group-name codedeploy-deployment-group \
         --file-exists-behavior OVERWR   ITE \
-        --s3-location bucket=freelec-s3-bucket,bundleType=zip,key=freelec-springboot2-webservice/freelec-springboot2-webservice.zip \
+        --s3-location bucket=freelec-s3-bucket,bundleType=zip,key=freelec-springboot2-webservice.zip \
         --region ap-northeast-2
 
 

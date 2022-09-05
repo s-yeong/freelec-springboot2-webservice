@@ -65,7 +65,7 @@ jobs: # 수행할 워크플로우
 
     # 프로젝트 이름으로 해당 폴더를 모두 압축 (빌드된 전체 폴더)
     - name: Make zip file
-      run: zip -r -qq -j ./$PROJECT_NAME.zip .
+      run: zip -r ./$PROJECT_NAME.zip .
       shell: bash
       
     - name: Configure AWS credentials

@@ -52,7 +52,7 @@ jobs: # 수행할 워크플로우
 
     # 압축파일 형태로 전달
     - name: Make zip file
-      run: zip -r -qq -j ./freelec.zip ./deploy
+      run: zip -r -qq -j ./freelec-springboot2-webservice.zip ./deploy
 
     # S3 Bucket으로 copy
     - name: Deliver to AWS S3
@@ -62,7 +62,7 @@ jobs: # 수행할 워크플로우
       run: |
           aws s3 cp \
           --region ap-northeast-2 \
-          --acl private ./freelec.zip s3://freelec-s3-bucket/
+          --acl private ./freelec-springboot2-webservice s3://freelec-springboot2-webservice/freelec-springboot2-webservice.zip
     # Deploy
     - name: Deploy
       env:
@@ -73,6 +73,7 @@ jobs: # 수행할 워크플로우
         --application-name codedeploy-app \
         --deployment-group-name codedeploy-deployment-group \
         --file-exists-behavior OVERWR   ITE \
-        --s3-location bucket=freelec-s3-bucket,bundleType=zip,key=freelec.zip \
+        --s3-location bucket=freelec-s3-bucket,bundleType=zip,key=freelec-springboot2-webservice/freelec-springboot2-webservice.zip \
         --region ap-northeast-2
+
 

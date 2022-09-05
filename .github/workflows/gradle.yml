@@ -7,7 +7,7 @@
 
 name: Java CI with Gradle
 
-on:
+on: # 워크플로우를 수행할 이벤트
   push:
     branches: [ "main" ]
   pull_request:
@@ -16,7 +16,7 @@ on:
 permissions:
   contents: read
 
-jobs:
+jobs: # 수행할 워크플로우
   build:
 
     runs-on: ubuntu-latest

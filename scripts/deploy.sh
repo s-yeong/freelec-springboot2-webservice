@@ -3,6 +3,9 @@
 REPOSITORY=/home/ubuntu/app/step2
 PROJECT_NAME=freelec-springboot2-webservice #해당 위치에 properties에 작성한 프로젝트명과 동일하게 작성합니다.
 
+echo "> directory 권한 추가"
+chown -R $USER:$USER $REPOSITORY
+
 echo "> Build 파일 복사"
 cp $REPOSITORY/zip/*.jar $REPOSITORY/
 

@@ -7,11 +7,11 @@ files:
 permissions:  # CodeDeploy에서 EC2 서버로 넘겨준 파일들을 모두 ubunt 권한을 갖도록함
   - object: /
     pattern: "**"
-    owner: ubuntu
-    group: ubuntu
+    owner: root
+    group: rootg
 
 hooks:  # CodeDeploy 배포 단계에서 실행할 명령어 지정
   ApplicationStart: # deploy.sh를 ubuntu 권한으로 실행하게 한다.
     - location: deploy.sh
       timeout: 60 # 60초 이상 수행되면 실패
-      runas: ubuntu
+      runas: root

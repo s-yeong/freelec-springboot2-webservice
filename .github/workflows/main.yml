@@ -19,9 +19,6 @@ on: # 워크플로우를 수행할 이벤트
   pull_request:
     branches: [ "main" ]
 
-permissions:
-  contents: read
-
 jobs: # 수행할 워크플로우
   build:
     
